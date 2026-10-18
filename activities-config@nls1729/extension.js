@@ -16,27 +16,25 @@ import Meta from 'gi://Meta';
 import Shell from 'gi://Shell';
 import St from 'gi://St';
 
-import {Extension} from 'resource:///org/gnome/shell/extensions/extension.js';
+import {Extension, gettext as _} from 'resource:///org/gnome/shell/extensions/extension.js';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
 
 import * as Colors from './colors.js';
 import * as Keys from './keys.js';
 
-const INTERFACE_SCHEMA = 'org.gnome.desktop.interface';
-const DEFAULT_HOT_CORNER_THRESHOLD = 100;
-const DEFAULT_HOT_CORNER_TIMEOUT = 1000;
+const DISABLED_HOT_CORNER_THRESHOLD = 32767;
 
 const ActivitiesButton = GObject.registerClass(
 class ActivitiesButton extends PanelMenu.Button {
     _init(extension) {
-        super._init(0.0, 'Activities', true);
+        super._init(0.0, _('Activities'), true);
         this._extension = extension;
 
         this.set({
             name: 'panelActivitiesIconButton',
             accessible_role: Atk.Role.TOGGLE_BUTTON,
-            accessible_name: 'Activities',
+            accessible_name: _('Activities'),
             track_hover: true,
         });
         this.container.name = 'panelActivitiesIconButtonContainer';
@@ -103,10 +101,12 @@ export default class ActivitiesConfigExtension extends Extension {
         this._savedPanelStyle = null;
         this._styleSaved = false;
         this._hidStock = false;
-        this._savedHotCorners = null;
-        this._interfaceSettings = new Gio.Settings({schema_id: INTERFACE_SCHEMA});
+        this._savedBarriers = new Map();
+        this._hotCornersReady = false;
         this._enableId = 0;
         this._panelUpdateId = 0;
+
+        this.initTranslations();
 
         if (Main.sessionMode.currentMode === 'classic')
             this._settings.set_boolean(Keys.CON_DET, true);
@@ -136,10 +136,9 @@ export default class ActivitiesConfigExtension extends Extension {
         this._disconnectAll();
         this._untrackAll();
 
-        if (this._savedHotCorners !== null) {
-            this._interfaceSettings.set_boolean('enable-hot-corners', this._savedHotCorners);
-            this._restoreHotCornerDefaults();
-            this._savedHotCorners = null;
+        if (this._hotCornersReady) {
+            this._restoreHotCorners();
+            this._hotCornersReady = false;
         }
 
         if (this._styleSaved) {
@@ -165,7 +164,7 @@ export default class ActivitiesConfigExtension extends Extension {
         this._enabled = true;
         this._savedPanelStyle = Main.panel.style;
         this._styleSaved = true;
-        this._savedHotCorners = this._interfaceSettings.get_boolean('enable-hot-corners');
+        this._hotCornersReady = true;
         this._hideStockActivities();
         this._placeButton();
         this._connectSettings();
@@ -303,7 +302,7 @@ export default class ActivitiesConfigExtension extends Extension {
 
         let text = this._settings.get_string(Keys.NEW_TXT);
         if (!text)
-            text = 'Activities';
+            text = _('Activities');
         if (this._settings.get_boolean(Keys.NO_TEXT))
             text = '';
         this._button._label.text = text;
@@ -347,38 +346,41 @@ export default class ActivitiesConfigExtension extends Extension {
     }
 
     _syncHotCorners() {
-        if (this._savedHotCorners === null)
+        if (!this._hotCornersReady)
             return;
         const disable = this._settings.get_boolean(Keys.NO_HOTC);
-        const enabled = this._interfaceSettings.get_boolean('enable-hot-corners');
-        if (disable && enabled)
-            this._interfaceSettings.set_boolean('enable-hot-corners', false);
-        else if (!disable && !enabled)
-            this._interfaceSettings.set_boolean('enable-hot-corners', true);
-        if (disable)
-            return;
-
-        const threshold = this._settings.get_int(Keys.HOTC_PT);
+        const threshold = disable
+            ? DISABLED_HOT_CORNER_THRESHOLD
+            : this._settings.get_int(Keys.HOTC_PT);
         const timeout = this._settings.get_int(Keys.HOTC_TO);
         for (const corner of Main.layoutManager.hotCorners) {
             const barrier = corner?._pressureBarrier;
             if (!barrier)
                 continue;
+            if (!this._savedBarriers.has(corner)) {
+                this._savedBarriers.set(corner, {
+                    threshold: barrier._threshold,
+                    timeout: barrier._timeout,
+                });
+            }
             barrier._threshold = threshold;
             barrier._timeout = timeout;
         }
     }
 
-    _restoreHotCornerDefaults() {
-        if (!this._interfaceSettings.get_boolean('enable-hot-corners'))
-            return;
-        for (const corner of Main.layoutManager.hotCorners) {
-            const barrier = corner?._pressureBarrier;
-            if (!barrier)
-                continue;
-            barrier._threshold = DEFAULT_HOT_CORNER_THRESHOLD;
-            barrier._timeout = DEFAULT_HOT_CORNER_TIMEOUT;
+    _restoreHotCorners() {
+        for (const [corner, saved] of this._savedBarriers) {
+            try {
+                const barrier = corner?._pressureBarrier;
+                if (!barrier)
+                    continue;
+                barrier._threshold = saved.threshold;
+                barrier._timeout = saved.timeout;
+            } catch {
+                // The corner was already destroyed when the layout rebuilt.
+            }
         }
+        this._savedBarriers.clear();
     }
 
     _connectWindows() {

@@ -5,7 +5,7 @@
   "settings-schema": "org.gnome.shell.extensions.activities-config",
   "shell-version": ["50", "51"],
   "session-modes": ["user", "classic"],
-  "url": "https://nls1729.github.io/activities_config.html",
+  "url": "https://github.com/MaxDeavy/acme-code",
   "uuid": "activities-config@nls1729",
   "version": 90
 }
