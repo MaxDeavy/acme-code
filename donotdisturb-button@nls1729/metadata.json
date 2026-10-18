@@ -1,0 +1,11 @@
+{
+  "description": "Panel button for Do Not Disturb. Hides notification banners, can mute sound, and can leave busy mode after a timeout.",
+  "gettext-domain": "donotdisturb-button-extension",
+  "name": "Do Not Disturb Button",
+  "settings-schema": "org.gnome.shell.extensions.donotdisturb-button",
+  "shell-version": ["50", "51"],
+  "session-modes": ["user", "classic"],
+  "url": "https://nls1729.github.io/donotdisturb_button.html",
+  "uuid": "donotdisturb-button@nls1729",
+  "version": 40
+}

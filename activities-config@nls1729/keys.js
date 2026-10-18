@@ -1,57 +1,33 @@
-
 /*
   Activities Configurator Gnome Shell Extension
-
   Copyright (c) 2012-2020 Norman L. Smith
-
-  This extension is free software; you can redistribute it and/or
-  modify it under the terms of the GNU General Public License
-  as published by the Free Software Foundation; either version 2
-  of the License, or (at your option) any later version.
-
-  This extension is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  GNU General Public License for more details.
-
-  You should have received a copy of the GNU General Public License
-  along with this program. If not, see
-  < https://www.gnu.org/licenses/old-licenses/gpl-2.0.html >.
-
-  This extension is a derived work of the Gnome Shell.
+  SPDX-License-Identifier: GPL-2.0-or-later
 */
 
-var REMOVED = 'activities-config-button-removed';
-var NEW_ICO = 'activities-config-button-icon-path';
-var ORI_TXT = 'original-activities-button-text';
-var NEW_TXT = 'activities-config-button-text';
-var HOTC_TO = 'activities-config-hot-corner-delay';
-var HOTC_PT = 'activities-config-hot-corner-threshold';
-var NO_HOTC = 'activities-config-hot-corner';
-var NO_ICON = 'activities-config-button-no-icon';
-var NO_TEXT = 'activities-config-button-no-text';
-var PAD_TXT = 'activities-text-padding';
-var PAD_ICO = 'activities-icon-padding';
-var SCF_ICO = 'activities-icon-scale-factor';
-var TRS_PAN = 'transparent-panel';
-var CON_DET = 'enable-conflict-detection';
-var DISABLE_ENABLE_DELAY = 'disable-enable-delay';
-var COLOURS = 'panel-background-color-hex-rgb';
-var HIDE_RC = 'panel-hide-rounded-corners';
-var HIDE_APPMBI = 'panel-hide-app-menu-button-icon';
-var BARRIERS = 'pointer-barriers-supported';
-var FIRST_ENABLE = 'first-enable';
-var MAX_WIN_EFFECT = 'maximized-window-effect';
-var SHADOW_COLOR = 'panel-shadow-color-hex-rgb';
-var SHADOW_TRANS = 'transparent-shadow';
-var SHADOW_LEN = 'panel-shadow-vertical-length';
-var SHADOW_BLUR = 'panel-shadow-blur-radius';
-var SHADOW_SPRED = 'panel-shadow-spread-radius';
-var OVERR_THEME = 'override-theme';
-var SHELL_THEME_ID = 'shell-theme-id';
-var SHOW_OVERVIEW = 'show-overview';
-var BTN_POSITION = 'position-right';
-var TILE_OFF = 'tile-max-effect-off';
-var EPVERSION = 'extension-version';
-var GSPVERSION = 'shell-version';
-var ICON_FILE = '/face-smile-3.svg'; // From Tango Project - Public Domain
+export const REMOVED = 'activities-config-button-removed';
+export const NEW_ICO = 'activities-config-button-icon-path';
+export const NEW_TXT = 'activities-config-button-text';
+export const HOTC_TO = 'activities-config-hot-corner-delay';
+export const HOTC_PT = 'activities-config-hot-corner-threshold';
+export const NO_HOTC = 'activities-config-hot-corner';
+export const NO_ICON = 'activities-config-button-no-icon';
+export const NO_TEXT = 'activities-config-button-no-text';
+export const PAD_TXT = 'activities-text-padding';
+export const PAD_ICO = 'activities-icon-padding';
+export const SCF_ICO = 'activities-icon-scale-factor';
+export const TRS_PAN = 'transparent-panel';
+export const CON_DET = 'enable-conflict-detection';
+export const DISABLE_ENABLE_DELAY = 'disable-enable-delay';
+export const COLOURS = 'panel-background-color-hex-rgb';
+export const SHADOW_COLOR = 'panel-shadow-color-hex-rgb';
+export const SHADOW_TRANS = 'transparent-shadow';
+export const SHADOW_LEN = 'panel-shadow-vertical-length';
+export const SHADOW_BLUR = 'panel-shadow-blur-radius';
+export const SHADOW_SPRED = 'panel-shadow-spread-radius';
+export const OVERR_THEME = 'override-theme';
+export const FIRST_ENABLE = 'first-enable';
+export const MAX_WIN_EFFECT = 'maximized-window-effect';
+export const SHOW_OVERVIEW = 'show-overview';
+export const BTN_POSITION = 'position-right';
+export const TILE_OFF = 'tile-max-effect-off';
+export const ICON_FILE = 'face-smile-3.svg';
